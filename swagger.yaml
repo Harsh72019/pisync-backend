@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: PiSync Backend API
+  version: 1.0.0
+  description: API for syncing data from devices and monitoring repeated failures.
+
+servers:
+  - url: http://localhost:5000/api
+    description: Local server
+
+paths:
+  /sync-event:
+    post:
+      summary: Receive and queue a sync event from a device
+      description: Receives sync event data from a device, validates, and queues it for processing.
+      tags:
+        - Sync
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - deviceId
+                - timestamp
+                - totalFilesSynced
+                - totalErrors
+                - internetSpeed
+              properties:
+                deviceId:
+                  type: string
+                  format: uuid
+                timestamp:
+                  type: string
+                  format: date-time
+                totalFilesSynced:
+                  type: integer
+                totalErrors:
+                  type: integer
+                internetSpeed:
+                  type: number
+                  description: In Mbps
+      responses:
+        '202':
+          description: Sync event queued successfully
+        '400':
+          description: Validation error
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Server error
+
+  /device/{id}/sync-history:
+    get:
+      summary: Get sync history for a device
+      description: Fetch all previous sync events for the specified device ID.
+      tags:
+        - Sync
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The device ID (UUID)
+      responses:
+        '200':
+          description: A list of sync events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    deviceId:
+                      type: string
+                    timestamp:
+                      type: string
+                      format: date-time
+                    totalFilesSynced:
+                      type: integer
+                    totalErrors:
+                      type: integer
+                    internetSpeed:
+                      type: number
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Server error
+
+  /devices/repeated-failures:
+    get:
+      summary: Get devices with repeated failures
+      description: Returns devices that have failed more than 3 times recently.
+      tags:
+        - Sync
+      responses:
+        '200':
+          description: Devices with repeated sync failures
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    deviceId:
+                      type: string
+                    failureCount:
+                      type: integer
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Server error

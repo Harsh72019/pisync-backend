@@ -1,0 +1,52 @@
+{
+  "name": "pisync-backend",
+  "version": "1.0.0",
+  "description": "Backend service for PiSync event processing",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon server.js",
+    "test": "jest",
+    "db:migrate": "node src/database/migrate.js",
+    "db:seed": "node src/database/seed.js"
+  },
+  "dependencies": {
+    "@bull-board/api": "^6.9.6",
+    "@bull-board/express": "^6.9.6",
+    "@faker-js/faker": "^9.8.0",
+    "axios": "^1.9.0",
+    "bullmq": "^5.53.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^7.1.0",
+    "ioredis": "^5.6.1",
+    "joi": "^17.13.3",
+    "mongoose": "^8.15.0",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
+    "redis": "^4.6.10",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "sync",
+    "offline",
+    "education",
+    "api",
+    "nodejs"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
