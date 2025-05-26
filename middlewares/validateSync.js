@@ -1,4 +1,3 @@
-// middlewares/validateSync.js
 const Joi = require("joi");
 
 const syncSchema = Joi.object({

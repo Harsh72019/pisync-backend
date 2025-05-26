@@ -21,7 +21,9 @@ async function checkFailures(deviceId, totalErrors) {
     }
 
     if (updatedDoc.failureCount >= 3) {
-      const alertMessage = `[ALERT] ${new Date().toISOString()} - Device ${deviceId} has failed ${updatedDoc.failureCount} times in a row!\n`;
+      const alertMessage = `[ALERT] ${new Date().toISOString()} - Device ${deviceId} has failed ${
+        updatedDoc.failureCount
+      } times in a row!\n`;
       console.log(alertMessage.trim());
 
       const logsDir = path.join(__dirname, "../logs");
@@ -33,7 +35,6 @@ async function checkFailures(deviceId, totalErrors) {
 
       fs.appendFileSync(logPath, alertMessage, "utf8");
     }
-
   } catch (err) {
     console.error("❌ checkFailures error:", err.message);
   }

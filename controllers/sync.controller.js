@@ -1,18 +1,18 @@
 // controllers/syncController.js
 const FailureCounter = require("../models/FailureCounter.model");
 const SyncEvent = require("../models/SyncEvent.model");
+const syncService = require("../services/sync.service");
 
 // controllers/syncController.js
 const syncQueue = require("../queues/syncQueue");
 
 exports.receiveSyncEvent = async (req, res) => {
   try {
-    const data = req.body;
-    await syncQueue.add("sync-event", data);
+    await syncService.receiveSyncEventService(req.body);
     res.status(202).json({success: true, message: "Sync event queued successfully" });
   } catch (err) {
     console.error("Queue Error:", err);
-    res.status(500).json({ error: "Failed to queue sync event" });
+    throw err;
   }
 };
 
@@ -21,18 +21,21 @@ exports.receiveSyncEvent = async (req, res) => {
 
 exports.getSyncHistory = async (req, res) => {
   try {
-    const events = await SyncEvent.find({ deviceId: req.params.id }).sort({ timestamp: -1 });
+    if(!req.params.id) {
+      return res.status(400).json({ error: "Device ID is required" });
+    }
+    const events = await syncService.getSyncHistoryService(req.params.id);
     res.json({success: true, data : events});
   } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
+    throw err;
   }
 };
 
-exports.getRepeatedFailures = async (_req, res) => {
+exports.getRepeatedFailures = async (req, res) => {
   try {
-     const failedDevices = await FailureCounter.find({ failureCount: { $gte: 3 } });
+     const failedDevices = await syncService.getRepeatedFailuresService();
     res.status(200).json({success: true, data : failedDevices});
   } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
+    throw err;
   }
 };

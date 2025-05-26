@@ -12,6 +12,9 @@ const envVarsSchema = Joi.object()
     REDIS_HOST: Joi.string().required(),
     REDIS_PORT: Joi.number().default(6379),
     REDIS_URL: Joi.string().required(),
+    NODE_ENV: Joi.string()
+      .valid("development", "production", "test")
+      .default("development"),
   })
   .unknown();
 
@@ -26,9 +29,10 @@ if (error) {
 }
 
 module.exports = {
-    port: envVars.PORT ,
-    mongoUri: envVars.MONGO_URI,
-    redisHost: envVars.REDIS_HOST,
-    redisPort: envVars.REDIS_PORT,
-    redisUrl: envVars.REDIS_URL,
+  port: envVars.PORT,
+  mongoUri: envVars.MONGO_URI,
+  redisHost: envVars.REDIS_HOST,
+  redisPort: envVars.REDIS_PORT,
+  redisUrl: envVars.REDIS_URL,
+  nodeEnv: envVars.NODE_ENV,
 };

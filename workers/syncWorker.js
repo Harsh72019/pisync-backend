@@ -1,20 +1,19 @@
 const { Worker } = require("bullmq");
 const redis = require("../config/redis.config");
 const SyncEvent = require("../models/SyncEvent.model");
-const {checkFailures} = require("../utils/checkFailures.util");
+const { checkFailures } = require("../utils/checkFailures.util");
 
 function startWorker() {
   const worker = new Worker(
     "sync-events",
     async (job) => {
       const event = job.data;
-    //   console.log("Processing job:", event);
+      //   console.log("Processing job:", event);
       await SyncEvent.create(event);
-    
-        await checkFailures(event.deviceId , event.totalErrors);
-      
+
+      await checkFailures(event.deviceId, event.totalErrors);
     },
-    { connection: redis ,concurrency : 10 }
+    { connection: redis, concurrency: 10 }
   );
 
   worker.on("completed", (job) => {
