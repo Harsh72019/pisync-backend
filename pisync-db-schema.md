@@ -1,6 +1,5 @@
 # 📦 PiSync - Database Schema Design
-
-This document outlines the MongoDB database schema for the PiSync backend system, designed to handle 100k+ devices syncing every hour.
+I have summed up the database design schema in this file and i have  designed it keeping in mind to handle 100k+ devices syncing every hour.
 
 ---
 
@@ -21,7 +20,7 @@ Stores each sync attempt made by a device.
 }
 ```
 
-### 📌 Indexes:
+### Indexes:
 - `deviceId`
 - `deviceId + timestamp`
 - `totalErrors`
@@ -30,7 +29,7 @@ Stores each sync attempt made by a device.
 
 ## 📄 2. `FailureCounter` Collection
 
-Tracks how many times a device has failed to sync consecutively.
+Tracks how many times a device has failed to sync continously.
 
 ```json
 {
@@ -48,8 +47,8 @@ Tracks how many times a device has failed to sync consecutively.
 
 ## 🧠 Relationships
 
-- `SyncEvent.deviceId` → references a device
-- `FailureCounter.deviceId` has a 1:1 relationship per device
+- `SyncEvent.deviceId` → references to device (if implemented)
+- `FailureCounter.deviceId` has a 1:1 relationship per device 
 
 ---
 
@@ -61,4 +60,4 @@ Tracks how many times a device has failed to sync consecutively.
 | Fast querying by device       | ✅ Indexed `deviceId` and `timestamp` fields                              |
 | Monitoring sync failures      | ✅ Optimized `FailureCounter` read access                                 |
 | Log and alert mechanism       | ✅ Writes alert to log + we can later implement notification support                    |
-| Database pressure reduction   | ✅ `FailureCounter` avoids repeated full history reads                     |
+| Database pressure reduction   | ✅ `FailureCounter` helps to avoid full history reads as everytime a user needs to check for repeated failure i would have to go through the entire db to check if there are more than 3 consecutive faliures and that was a read heavy operation so did some time-space tradeoff                    |
