@@ -7,6 +7,7 @@
 
 - We can use read and write replicas create a master wtite DB and multiple read DB and write heavy operations goes to the write replica and through KAFKA or bullMQ or any other we can just replicate those in the reads as well and with the help of consistent hashing we can query into multiple read replicas
 - We can also think of failure case in which the write db goes down so one of the reads must take it's place
+- Moreover we can use Amazon dynamo DB and cassandra if we need to scale to millions and if somehow cassandra becomes a bottleneck we can use scylla db (just like how discord migrated from cassandra to scylla)
 
 ## Load Balancing 
 
