@@ -1,10 +1,4 @@
-// controllers/syncController.js
-const FailureCounter = require("../models/FailureCounter.model");
-const SyncEvent = require("../models/SyncEvent.model");
 const syncService = require("../services/sync.service");
-
-// controllers/syncController.js
-const syncQueue = require("../queues/syncQueue");
 
 exports.receiveSyncEvent = async (req, res) => {
   try {
@@ -24,7 +18,16 @@ exports.getSyncHistory = async (req, res) => {
     if(!req.params.id) {
       return res.status(400).json({ error: "Device ID is required" });
     }
-    const events = await syncService.getSyncHistoryService(req.params.id);
+      const filters = {
+        deviceId: req.params.id,
+      }
+      const {  page = 1, limit = 10 } = req.query;
+      const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        sort: { timestamp: -1 },
+      };
+    const events = await syncService.getSyncHistoryService(filters, options);
     res.json({success: true, data : events});
   } catch (err) {
     throw err;
@@ -33,7 +36,16 @@ exports.getSyncHistory = async (req, res) => {
 
 exports.getRepeatedFailures = async (req, res) => {
   try {
-     const failedDevices = await syncService.getRepeatedFailuresService();
+      const {  page = 1, limit = 10 } = req.query;
+      const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        sort: { failureCount: -1 },
+      };
+      const filters = {
+        failureCount: { $gte: 3 },
+      };
+     const failedDevices = await syncService.getRepeatedFailuresService(  filters, options);
     res.status(200).json({success: true, data : failedDevices});
   } catch (err) {
     throw err;
